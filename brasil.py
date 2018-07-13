@@ -62,3 +62,20 @@ class BrasilIO:
             self._create_url('dataset/' + slug + '/' + tablename + '/data'),
             params=kwargs,
         )
+
+    def holdings(self, cnpj):
+        url = self._create_url(
+            'especiais/grafo/sociedades/empresas-mae',
+            params={'identificador': cnpj},
+        )
+        response = self._get_json(url)
+        return [node for node in response['network']['nodes']
+                if 'EmpresaMae' in node['labels']]
+
+    def family(self, cnpj):
+        url = self._create_url(
+            'especiais/grafo/sociedades/subsequentes',
+            params={'identificador': cnpj},
+        )
+        response = self._get_json(url)
+        return response['network']['nodes']
